@@ -10,7 +10,8 @@ use std::marker::PhantomData;
 use std::slice;
 use std::ops::{Index, IndexMut};
 
-/// A dynamically allocated two-dimensional array with fixed size.
+/// A dynamically allocated, two-dimensional array with fixed size.
+/// Elements are stored in row-major order.
 pub struct DynArray2<T> {
     ptr: *mut T,
     width: u16,
@@ -18,14 +19,14 @@ pub struct DynArray2<T> {
 }
 
 impl<T: Clone> DynArray2<T> {
-    /// Constructs an array with the given width and height by cloning `element`.
+    /// Constructs an array from a width and height by cloning `element`.
     /// Will panic if width, height, or size of T are zero, or allocation fails.
     pub fn new(width: u16, height: u16, element: T) -> DynArray2<T> {
         let ptr = DynArray2::init(width, height, element).expect("DynArray2::new called with invalid input.");
         DynArray2 { ptr: ptr, width: width, height: height }
     }
     
-    /// Constructs an array with the given width and height by cloning `element`.
+    /// Constructs an array from a width and height by cloning `element`.
     /// Will return `None` if width, height, or size of T are zero, or allocation fails.
     pub fn new_checked(width: u16, height: u16, element: T) -> Option<DynArray2<T>> {
         DynArray2::init(width, height, element).map(|ptr| DynArray2 { ptr: ptr, width: width, height: height })
