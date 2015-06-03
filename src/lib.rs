@@ -27,7 +27,7 @@ impl<T: Clone> DynArray2<T> {
     
     /// Constructs an array with the given width and height by cloning `element`.
     /// Will return None if width, height or size of T are zero, or allocation fails.
-    pub fn new_opt(width: u16, height: u16, element: T) -> Option<DynArray2<T>> {
+    pub fn new_checked(width: u16, height: u16, element: T) -> Option<DynArray2<T>> {
         DynArray2::init(width, height, element).map(|ptr| DynArray2 { ptr: ptr, width: width, height: height })
     }
     
