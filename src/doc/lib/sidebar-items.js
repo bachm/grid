@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DynArray2","A dynamically allocated two-dimensional array with fixed size."],["Iter",""],["IterMut",""],["Rows",""],["RowsMut",""]]});

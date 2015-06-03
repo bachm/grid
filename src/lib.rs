@@ -19,14 +19,14 @@ pub struct DynArray2<T> {
 
 impl<T: Clone> DynArray2<T> {
     /// Constructs an array with the given width and height by cloning `element`.
-    /// Will panic if width, height or size of T are zero, or allocation fails.
+    /// Will panic if width, height, or size of T are zero, or allocation fails.
     pub fn new(width: u16, height: u16, element: T) -> DynArray2<T> {
         let ptr = DynArray2::init(width, height, element).expect("DynArray2::new called with invalid input.");
         DynArray2 { ptr: ptr, width: width, height: height }
     }
     
     /// Constructs an array with the given width and height by cloning `element`.
-    /// Will return None if width, height or size of T are zero, or allocation fails.
+    /// Will return `None` if width, height, or size of T are zero, or allocation fails.
     pub fn new_checked(width: u16, height: u16, element: T) -> Option<DynArray2<T>> {
         DynArray2::init(width, height, element).map(|ptr| DynArray2 { ptr: ptr, width: width, height: height })
     }
@@ -47,23 +47,24 @@ impl<T: Clone> DynArray2<T> {
     }
 }
 
-impl<T> DynArray2<T> {    
+impl<T> DynArray2<T> {
+    /// Returns an iterator over the elements of the array.
     pub fn iter<'a>(&'a self) -> Iter<'a, T> {
         Iter { ptr: self.ptr, end: self.end(), marker: PhantomData }
     }
-    
+    /// Returns a mutable iterator over the elements of the array.
     pub fn iter_mut<'a>(&'a mut self) -> IterMut<'a, T> {
         IterMut { ptr: self.ptr, end: self.end_mut(), marker: PhantomData }
     }
-    
+    /// Returns an iterator over the rows of the array. Rows are represented as slice.
     pub fn rows<'a>(&'a self) -> Rows<'a, T> {
         Rows { ptr: self.ptr, end: self.end(), len: self.width as usize, marker: PhantomData }
     }
-    
+    /// Returns a mutable iterator over the rows of the array. Rows are represented as slice.
     pub fn rows_mut<'a>(&'a mut self) -> RowsMut<'a, T> {
         RowsMut { ptr: self.ptr, end: self.end_mut(), len: self.width as usize, marker: PhantomData }
     }
-    
+    /// Returns a reference to the element at the given position, or `None` if the position is invalid.
     pub fn get(&self, x: u16, y: u16) -> Option<&T> {
         if x < self.width && y < self.height {
             unsafe { self.ptr.offset(x as isize + y as isize * self.width as isize).as_ref() }
@@ -71,7 +72,7 @@ impl<T> DynArray2<T> {
             None
         }
     }
-    
+    /// Returns a mutable reference to the element at the given position, or `None` if the position is invalid.
     pub fn get_mut(&mut self, x: u16, y: u16) -> Option<&mut T> {
         if x < self.width && y < self.height {
             unsafe { self.ptr.offset(x as isize + y as isize * self.width as isize).as_mut() }
@@ -79,11 +80,11 @@ impl<T> DynArray2<T> {
             None
         }
     }
-    
+    /// Returns the width of the array.
     pub fn width(&self) -> u16 {
         self.width
     }
-    
+    /// Returns the height of the array.
     pub fn height(&self) -> u16 {
         self.height
     }
@@ -110,7 +111,7 @@ impl<T> Drop for DynArray2<T> {
         }
     }
 }
-
+/// An iterator over the elements of the array.
 pub struct Iter<'a, T: 'a> {
     ptr: *const T,
     end: *const T,
@@ -129,7 +130,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
         }
     }
 }
-
+/// A mutable iterator over the elements of the array.
 pub struct IterMut<'a, T: 'a> {
     ptr: *mut T,
     end: *mut T,
@@ -148,7 +149,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
         }
     }
 }
-
+/// An iterator over the rows of the array.
 pub struct Rows<'a, T: 'a> {
     ptr: *const T,
     end: *const T,
@@ -168,7 +169,7 @@ impl<'a, T> Iterator for Rows<'a, T> {
         }
     }
 }
-
+/// A mutable iterator over the rows of the array.
 pub struct RowsMut<'a, T: 'a> {
     ptr: *mut T,
     end: *mut T,
