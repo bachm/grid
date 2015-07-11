@@ -367,7 +367,7 @@ impl Point2 for [u32; 2] {
 impl<P: Point2, T> Index<P> for Array2<T> {
     type Output = T;
     
-    fn index(&self, point: P) -> &T {
+    fn index(&self, point: P) -> &Self::Output {
         let x = point.x();
         let y = point.y();
         if x < self.width && y < self.height {
@@ -379,7 +379,7 @@ impl<P: Point2, T> Index<P> for Array2<T> {
 }
 
 impl<P: Point2, T> IndexMut<P> for Array2<T> {
-    fn index_mut(&mut self, point: P) -> &mut T {
+    fn index_mut(&mut self, point: P) -> &mut Self::Output {
         let x = point.x();
         let y = point.y();
         if x < self.width && y < self.height {
