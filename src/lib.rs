@@ -448,21 +448,7 @@ impl<T: Encodable> Encodable for Array2<T> {
 
 impl<T: fmt::Debug> fmt::Debug for Array2<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "["));
-        for row in self.rows().take(1) {
-            let ref mut builder = f.debug_list();
-            try!(row.iter().fold(builder, |b, e| b.entry(e)).finish())
-        }
-        for row in self.rows().skip(1) {
-            try!(write!(f, ", "));
-            let ref mut builder = f.debug_list();
-            try!(row.iter().fold(builder, |b, e| b.entry(e)).finish())
-        }
-        write!(f, "]")
-        /*
-        let ref mut builder = f.debug_list();
-        self.rows().fold(builder, |b, e| b.entry(e)).finish()
-        */
+        self.rows().fold(&mut f.debug_list(), |b, e| b.entry(&e)).finish()
     }
 }
 
@@ -502,8 +488,6 @@ impl<T: Ord> Ord for Array2<T> {
 
 #[cfg(test)]
 mod test {
-    // Every operation needs to be tested with a standard, zero-width, zero-height, and zero-sized type array.
-    
     use super::Array2;
     
     #[derive(Copy, Clone, PartialEq, Debug)]
@@ -676,6 +660,23 @@ mod test {
     fn index_mut_panic() {
         let mut array = standard_array();
         array[(3, 1)] += 1;
+    }
+    
+    #[test]
+    fn slicing() {
+        let array = standard_array();
+        assert_eq!(&array.as_slice()[3], &3);
+        assert_eq!(&array.as_slice()[..], &[0, 1, 2, 3][..]);
+        
+        let array = zero_width_array();
+        assert_eq!(&array.as_slice()[..], &[]);
+        
+        let array = zero_height_array();
+        assert_eq!(&array.as_slice()[..], &[]);
+        
+        let array = zst_array();
+        assert_eq!(&array.as_slice()[1..3], &[ZeroSizedType, ZeroSizedType][..]);
+        
     }
     
     #[test]
