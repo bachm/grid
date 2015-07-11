@@ -14,11 +14,6 @@ use std::ops::{Index, IndexMut};
 use std::fmt;
 use std::cmp::{self, Ordering};
 
-/*
-    to do: 
-    handle oom during allocation
-*/
-
 /// A 2d array whose size is determined at runtime and fixed at construction.
 /// Elements are stored in row-major order.
 pub struct Array2<T> {
