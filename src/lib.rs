@@ -83,28 +83,28 @@ impl<T> Array2<T> {
     }
 
     /// Returns an iterator over the elements of the array.
-    pub fn iter<'a>(&'a self) -> Items<'a, T> {
+    pub fn iter(&self) -> Items<T> {
         Items { ptr: *self.ptr, end: self.end(), marker: PhantomData }
     }
     
     /// Returns a mutable iterator over the elements of the array.
-    pub fn iter_mut<'a>(&'a mut self) -> ItemsMut<'a, T> {
+    pub fn iter_mut(&mut self) -> ItemsMut<T> {
         ItemsMut { ptr: *self.ptr, end: self.end(), marker: PhantomData }
     }
     
     /// Returns an iterator over the rows of the array. Rows are represented as slice.
-    pub fn rows<'a>(&'a self) -> Rows<'a, T> {
+    pub fn rows(&self) -> Rows<T> {
         Rows { ptr: *self.ptr, end: self.end(), len: self.width as usize, marker: PhantomData }
     }
     
     /// Returns a mutable iterator over the rows of the array. Rows are represented as slice.
-    pub fn rows_mut<'a>(&'a mut self) -> RowsMut<'a, T> {
+    pub fn rows_mut(&mut self) -> RowsMut<T> {
         RowsMut { ptr: *self.ptr, end: self.end(), len: self.width as usize, marker: PhantomData }
     }
     
     /// Returns an iterator over the rows of a rectangular section of the array.
     /// Parts of the section that exceed the array bounds will be skipped.
-    pub fn view<'a>(&'a self, x: u32, y: u32, width: u32, height: u32) -> View<'a, T> {
+    pub fn view(&self, x: u32, y: u32, width: u32, height: u32) -> View<T> {
         let (ptr, end, slice_len, array_width) = self.view_components(x, y, width, height);
         View {
             ptr: ptr,
@@ -117,7 +117,7 @@ impl<T> Array2<T> {
     
     /// Returns a mutable iterator over the rows of a rectangular section of the array.
     /// Parts of the section that exceed the array bounds will be skipped.
-    pub fn view_mut<'a>(&'a mut self, x: u32, y: u32, width: u32, height: u32) -> ViewMut<'a, T> {
+    pub fn view_mut(&mut self, x: u32, y: u32, width: u32, height: u32) -> ViewMut<T> {
         let (ptr, end, slice_len, array_width) = self.view_components(x, y, width, height);
         ViewMut {
             ptr: ptr,
@@ -144,7 +144,7 @@ impl<T> Array2<T> {
     }
     
     /// Returns a mutable slice over all elements in the array.
-    pub fn as_mut_slice(&mut self) -> &mut [T] {
+    pub fn as_slice_mut(&mut self) -> &mut [T] {
         unsafe { slice::from_raw_parts_mut(*self.ptr, self.width as usize * self.height as usize) }
     }
 
